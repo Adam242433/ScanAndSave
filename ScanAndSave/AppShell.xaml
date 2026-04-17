@@ -7,11 +7,12 @@
        Shell.NavBarIsVisible="True"
        Shell.BackgroundColor="{StaticResource Primary}"
        Shell.ForegroundColor="White"
-       Shell.TitleColor="White">
+       Shell.TitleColor="White"
+       Shell.NavBarHasShadow="False">
 
     <!-- Startside: Scanner -->
     <ShellContent
-        Title="Scanner"
+        Title="Scan &amp; Save"
         ContentTemplate="{DataTemplate views:ScannerPage}"
         Route="ScannerPage"/>
 

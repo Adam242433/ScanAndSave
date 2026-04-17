@@ -2,42 +2,77 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
+    <!-- ================= BRAND PALETTE ================= -->
     <Color x:Key="Primary">#2563EB</Color>
     <Color x:Key="PrimaryDark">#1D4ED8</Color>
     <Color x:Key="PrimaryLight">#DBEAFE</Color>
     <Color x:Key="Accent">#10B981</Color>
     <Color x:Key="AccentDark">#059669</Color>
+    <Color x:Key="AccentLight">#D1FAE5</Color>
     <Color x:Key="Danger">#EF4444</Color>
     <Color x:Key="DangerLight">#FEE2E2</Color>
     <Color x:Key="Warning">#F59E0B</Color>
     <Color x:Key="WarningLight">#FEF3C7</Color>
-    <Color x:Key="BackgroundLight">#F8FAFC</Color>
-    <Color x:Key="Surface">#FFFFFF</Color>
-    <Color x:Key="CardBorder">#E2E8F0</Color>
-    <Color x:Key="TextPrimary">#1E293B</Color>
-    <Color x:Key="TextSecondary">#64748B</Color>
-    <Color x:Key="TextMuted">#94A3B8</Color>
 
+    <!-- Surfaces -->
+    <Color x:Key="BackgroundLight">#F1F5F9</Color>
+    <Color x:Key="Surface">#FFFFFF</Color>
+    <Color x:Key="SurfaceSubtle">#F8FAFC</Color>
+    <Color x:Key="CardBorder">#E2E8F0</Color>
+    <Color x:Key="FieldBackground">#FFFFFF</Color>
+    <Color x:Key="FieldBorderColor">#CBD5E1</Color>
+    <Color x:Key="FieldBorderFocusColor">#2563EB</Color>
+
+    <!-- Text -->
+    <Color x:Key="TextPrimary">#0F172A</Color>
+    <Color x:Key="TextSecondary">#475569</Color>
+    <Color x:Key="TextMuted">#94A3B8</Color>
+    <Color x:Key="TextOnPrimary">#FFFFFF</Color>
+
+    <!-- ================= TEXT STYLES ================= -->
     <Style x:Key="PageTitle" TargetType="Label">
-        <Setter Property="FontSize" Value="28"/>
+        <Setter Property="FontSize" Value="26"/>
         <Setter Property="FontAttributes" Value="Bold"/>
         <Setter Property="TextColor" Value="{StaticResource TextPrimary}"/>
+    </Style>
+
+    <Style x:Key="PageSubtitle" TargetType="Label">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="TextColor" Value="{StaticResource TextSecondary}"/>
     </Style>
 
     <Style x:Key="SectionTitle" TargetType="Label">
-        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="FontSize" Value="17"/>
         <Setter Property="FontAttributes" Value="Bold"/>
         <Setter Property="TextColor" Value="{StaticResource TextPrimary}"/>
     </Style>
 
+    <Style x:Key="FieldLabel" TargetType="Label">
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="FontAttributes" Value="Bold"/>
+        <Setter Property="TextColor" Value="{StaticResource TextSecondary}"/>
+    </Style>
+
+    <!-- ================= SURFACE STYLES ================= -->
     <Style x:Key="CardFrame" TargetType="Frame">
         <Setter Property="BackgroundColor" Value="{StaticResource Surface}"/>
         <Setter Property="BorderColor" Value="{StaticResource CardBorder}"/>
-        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="CornerRadius" Value="14"/>
         <Setter Property="Padding" Value="16"/>
         <Setter Property="HasShadow" Value="False"/>
     </Style>
 
+    <!-- Visible container around Entry / Picker / DatePicker / Editor -->
+    <Style x:Key="FieldBorder" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource FieldBackground}"/>
+        <Setter Property="Stroke" Value="{StaticResource FieldBorder}"/>
+        <Setter Property="StrokeThickness" Value="1"/>
+        <Setter Property="StrokeShape" Value="RoundRectangle 10"/>
+        <Setter Property="Padding" Value="12,0"/>
+        <Setter Property="MinimumHeightRequest" Value="48"/>
+    </Style>
+
+    <!-- ================= BUTTONS ================= -->
     <Style x:Key="PrimaryButton" TargetType="Button">
         <Setter Property="BackgroundColor" Value="{StaticResource Primary}"/>
         <Setter Property="TextColor" Value="White"/>
@@ -45,6 +80,7 @@
         <Setter Property="FontSize" Value="16"/>
         <Setter Property="CornerRadius" Value="12"/>
         <Setter Property="HeightRequest" Value="50"/>
+        <Setter Property="Padding" Value="16,0"/>
     </Style>
 
     <Style x:Key="SecondaryButton" TargetType="Button">
@@ -54,6 +90,7 @@
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="CornerRadius" Value="10"/>
         <Setter Property="HeightRequest" Value="44"/>
+        <Setter Property="Padding" Value="14,0"/>
     </Style>
 
     <Style x:Key="DangerButton" TargetType="Button">
@@ -65,20 +102,80 @@
         <Setter Property="HeightRequest" Value="44"/>
     </Style>
 
+    <Style x:Key="AccentButton" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="{StaticResource Accent}"/>
+        <Setter Property="TextColor" Value="White"/>
+        <Setter Property="FontAttributes" Value="Bold"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="HeightRequest" Value="50"/>
+    </Style>
+
+    <!-- Stepper (plus/minus) buttons -->
+    <Style x:Key="StepperMinusButton" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="{StaticResource SurfaceSubtle}"/>
+        <Setter Property="TextColor" Value="{StaticResource TextPrimary}"/>
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="FontAttributes" Value="Bold"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="BorderColor" Value="{StaticResource FieldBorderColor}"/>
+        <Setter Property="BorderWidth" Value="1"/>
+        <Setter Property="Padding" Value="0"/>
+    </Style>
+
+    <Style x:Key="StepperPlusButton" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="{StaticResource Primary}"/>
+        <Setter Property="TextColor" Value="White"/>
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="FontAttributes" Value="Bold"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Padding" Value="0"/>
+    </Style>
+
+    <!-- ================= FORM CONTROLS ================= -->
+    <!-- These are applied to the inner control *inside* the FieldBorder wrapper,
+         so backgrounds stay transparent and the Border provides the visible chrome. -->
     <Style x:Key="EntryStyle" TargetType="Entry">
-        <Setter Property="BackgroundColor" Value="{StaticResource BackgroundLight}"/>
+        <Setter Property="BackgroundColor" Value="Transparent"/>
         <Setter Property="TextColor" Value="{StaticResource TextPrimary}"/>
         <Setter Property="PlaceholderColor" Value="{StaticResource TextMuted}"/>
         <Setter Property="FontSize" Value="16"/>
-        <Setter Property="HeightRequest" Value="48"/>
+        <Setter Property="HeightRequest" Value="46"/>
     </Style>
 
     <Style x:Key="SearchEntry" TargetType="Entry">
-        <Setter Property="BackgroundColor" Value="{StaticResource BackgroundLight}"/>
+        <Setter Property="BackgroundColor" Value="Transparent"/>
         <Setter Property="TextColor" Value="{StaticResource TextPrimary}"/>
         <Setter Property="PlaceholderColor" Value="{StaticResource TextMuted}"/>
         <Setter Property="FontSize" Value="15"/>
         <Setter Property="HeightRequest" Value="44"/>
+    </Style>
+
+    <Style x:Key="EditorStyle" TargetType="Editor">
+        <Setter Property="BackgroundColor" Value="Transparent"/>
+        <Setter Property="TextColor" Value="{StaticResource TextPrimary}"/>
+        <Setter Property="PlaceholderColor" Value="{StaticResource TextMuted}"/>
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="AutoSize" Value="TextChanges"/>
+    </Style>
+
+    <Style x:Key="PickerStyle" TargetType="Picker">
+        <Setter Property="BackgroundColor" Value="Transparent"/>
+        <Setter Property="TextColor" Value="{StaticResource TextPrimary}"/>
+        <Setter Property="TitleColor" Value="{StaticResource TextMuted}"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="HeightRequest" Value="46"/>
+        <Setter Property="HorizontalOptions" Value="Fill"/>
+        <Setter Property="VerticalOptions" Value="Center"/>
+    </Style>
+
+    <Style x:Key="DatePickerStyle" TargetType="DatePicker">
+        <Setter Property="BackgroundColor" Value="Transparent"/>
+        <Setter Property="TextColor" Value="{StaticResource TextPrimary}"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="HeightRequest" Value="46"/>
+        <Setter Property="HorizontalOptions" Value="Fill"/>
+        <Setter Property="VerticalOptions" Value="Center"/>
     </Style>
 
 </ResourceDictionary>

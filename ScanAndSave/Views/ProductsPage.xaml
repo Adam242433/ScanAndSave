@@ -16,32 +16,33 @@
     <Grid RowDefinitions="Auto,Auto,Auto,*">
 
         <!-- ========== HEADER ========== -->
-        <VerticalStackLayout Grid.Row="0" Padding="20,16,20,8">
+        <VerticalStackLayout Grid.Row="0"
+                             Padding="20,16,20,10"
+                             Spacing="2">
             <Label Text="{Binding CurrentGroupName}"
                    Style="{StaticResource PageTitle}"/>
             <Label Text="Dine gemte varer i denne gruppe"
-                   TextColor="{StaticResource TextSecondary}"
-                   FontSize="14"/>
+                   Style="{StaticResource PageSubtitle}"/>
         </VerticalStackLayout>
 
         <!-- ========== SØGEFELT ========== -->
-        <Frame Grid.Row="1"
-               Style="{StaticResource CardFrame}"
-               Padding="4,0"
-               Margin="20,0">
-            <Grid ColumnDefinitions="Auto,*" HeightRequest="44">
-                <Label Text="Søg"
+        <Border Grid.Row="1"
+                Style="{StaticResource FieldBorder}"
+                Margin="20,4,20,8"
+                Padding="12,0">
+            <Grid ColumnDefinitions="Auto,*"
+                  ColumnSpacing="8"
+                  HeightRequest="44">
+                <Label Text="🔍"
                        FontSize="16"
                        TextColor="{StaticResource TextMuted}"
-                       VerticalOptions="Center"
-                       Margin="12,0,0,0"/>
+                       VerticalOptions="Center"/>
                 <Entry Grid.Column="1"
                        Placeholder="Søg efter vare..."
                        Text="{Binding SearchText}"
-                       Style="{StaticResource SearchEntry}"
-                       BackgroundColor="Transparent"/>
+                       Style="{StaticResource SearchEntry}"/>
             </Grid>
-        </Frame>
+        </Border>
 
         <!-- ========== LOADING ========== -->
         <ActivityIndicator Grid.Row="2"
@@ -49,20 +50,27 @@
                            IsVisible="{Binding IsLoading}"
                            Color="{StaticResource Primary}"
                            HeightRequest="30"
-                           Margin="0,8"/>
+                           Margin="0,6"/>
 
         <!-- ========== PRODUKTER LISTE ========== -->
         <CollectionView Grid.Row="3"
                         ItemsSource="{Binding Products}"
-                        Margin="20,8,20,20"
+                        Margin="20,6,20,20"
                         SelectionMode="None">
+
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
+            </CollectionView.ItemsLayout>
 
             <!-- Tom tilstand -->
             <CollectionView.EmptyView>
                 <VerticalStackLayout HorizontalOptions="Center"
                                      VerticalOptions="Center"
-                                     Spacing="12"
-                                     Padding="20">
+                                     Spacing="10"
+                                     Padding="24">
+                    <Label Text="📦"
+                           FontSize="48"
+                           HorizontalTextAlignment="Center"/>
                     <Label Text="Ingen varer endnu"
                            FontSize="20"
                            FontAttributes="Bold"
@@ -95,13 +103,14 @@
                         </SwipeView.RightItems>
 
                         <Frame Style="{StaticResource CardFrame}"
-                               Margin="0,5"
                                Padding="14">
                             <Grid RowDefinitions="Auto,Auto,Auto"
-                                  ColumnDefinitions="*,Auto">
+                                  ColumnDefinitions="*,Auto"
+                                  RowSpacing="6"
+                                  ColumnSpacing="10">
 
                                 <!-- Række 1: Navn + Kategori -->
-                                <VerticalStackLayout Grid.Row="0" Grid.Column="0">
+                                <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="2">
                                     <Label Text="{Binding Name}"
                                            FontSize="17"
                                            FontAttributes="Bold"
@@ -115,16 +124,13 @@
                                 <!-- Række 1: Antal kontrol -->
                                 <Grid Grid.Row="0" Grid.Column="1"
                                       ColumnDefinitions="36,40,36"
+                                      ColumnSpacing="4"
                                       VerticalOptions="Center">
-                                    <Button Text="-"
-                                            BackgroundColor="{StaticResource BackgroundLight}"
-                                            TextColor="{StaticResource TextPrimary}"
+                                    <Button Text="−"
+                                            Style="{StaticResource StepperMinusButton}"
                                             FontSize="18"
-                                            FontAttributes="Bold"
-                                            CornerRadius="8"
                                             HeightRequest="36"
                                             WidthRequest="36"
-                                            Padding="0"
                                             Clicked="OnQuantityDown"
                                             CommandParameter="{Binding .}"/>
                                     <Label Grid.Column="1"
@@ -136,14 +142,10 @@
                                            VerticalTextAlignment="Center"/>
                                     <Button Grid.Column="2"
                                             Text="+"
-                                            BackgroundColor="{StaticResource PrimaryLight}"
-                                            TextColor="{StaticResource Primary}"
+                                            Style="{StaticResource StepperPlusButton}"
                                             FontSize="18"
-                                            FontAttributes="Bold"
-                                            CornerRadius="8"
                                             HeightRequest="36"
                                             WidthRequest="36"
-                                            Padding="0"
                                             Clicked="OnQuantityUp"
                                             CommandParameter="{Binding .}"/>
                                 </Grid>
@@ -152,13 +154,11 @@
                                 <Label Grid.Row="1" Grid.ColumnSpan="2"
                                        Text="{Binding Barcode, StringFormat='Stregkode: {0}'}"
                                        FontSize="12"
-                                       TextColor="{StaticResource TextMuted}"
-                                       Margin="0,6,0,0"/>
+                                       TextColor="{StaticResource TextMuted}"/>
 
                                 <!-- Række 3: Udløbsdato + Tilføjelsesdato -->
                                 <Grid Grid.Row="2" Grid.ColumnSpan="2"
-                                      ColumnDefinitions="*,Auto"
-                                      Margin="0,4,0,0">
+                                      ColumnDefinitions="*,Auto">
                                     <Label Text="{Binding ExpiryDate, Converter={StaticResource DateToString}}"
                                            TextColor="{Binding ExpiryDate, Converter={StaticResource ExpiryToColor}}"
                                            FontSize="13"

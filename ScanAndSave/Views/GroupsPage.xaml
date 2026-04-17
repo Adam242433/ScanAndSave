@@ -14,19 +14,24 @@
     <Grid RowDefinitions="Auto,Auto,*">
 
         <!-- ========== HEADER ========== -->
-        <Grid Grid.Row="0" Padding="20,16" ColumnDefinitions="*,Auto">
-            <VerticalStackLayout>
+        <Grid Grid.Row="0"
+              Padding="20,16,20,12"
+              ColumnDefinitions="*,Auto"
+              ColumnSpacing="12">
+            <VerticalStackLayout Spacing="2">
                 <Label Text="Mine grupper"
                        Style="{StaticResource PageTitle}"/>
                 <Label Text="Vælg en gruppe for at se varer"
-                       TextColor="{StaticResource TextSecondary}"
-                       FontSize="14"/>
+                       Style="{StaticResource PageSubtitle}"/>
             </VerticalStackLayout>
             <Button Grid.Column="1"
                     Text="+ Ny"
                     Style="{StaticResource PrimaryButton}"
-                    WidthRequest="80"
+                    FontSize="14"
+                    WidthRequest="86"
                     HeightRequest="44"
+                    CornerRadius="10"
+                    Padding="0"
                     Clicked="OnAddGroup"
                     VerticalOptions="Center"/>
         </Grid>
@@ -37,20 +42,27 @@
                            IsVisible="{Binding IsLoading}"
                            Color="{StaticResource Primary}"
                            HeightRequest="30"
-                           Margin="0,8"/>
+                           Margin="0,4"/>
 
         <!-- ========== GRUPPER LISTE ========== -->
         <CollectionView Grid.Row="2"
                         ItemsSource="{Binding Groups}"
-                        Margin="20,0,20,20"
+                        Margin="20,4,20,20"
                         SelectionMode="None">
+
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="12"/>
+            </CollectionView.ItemsLayout>
 
             <!-- Tom tilstand -->
             <CollectionView.EmptyView>
                 <VerticalStackLayout HorizontalOptions="Center"
                                      VerticalOptions="Center"
-                                     Spacing="12"
-                                     Padding="20">
+                                     Spacing="10"
+                                     Padding="24">
+                    <Label Text="🗂"
+                           FontSize="48"
+                           HorizontalTextAlignment="Center"/>
                     <Label Text="Ingen grupper endnu"
                            FontSize="20"
                            FontAttributes="Bold"
@@ -72,7 +84,6 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <SwipeView>
-                        <!-- Swipe til venstre for at slette -->
                         <SwipeView.RightItems>
                             <SwipeItems>
                                 <SwipeItem Text="Slet"
@@ -83,7 +94,6 @@
                         </SwipeView.RightItems>
 
                         <Frame Style="{StaticResource CardFrame}"
-                               Margin="0,6"
                                Padding="0"
                                IsClippedToBounds="True">
                             <Frame.GestureRecognizers>
@@ -91,35 +101,35 @@
                                                       CommandParameter="{Binding .}"/>
                             </Frame.GestureRecognizers>
 
-                            <Grid ColumnDefinitions="80,*,Auto" HeightRequest="80">
+                            <Grid ColumnDefinitions="84,*,Auto" HeightRequest="84">
 
                                 <!-- Gruppe-billede eller placeholder -->
                                 <Grid BackgroundColor="{StaticResource PrimaryLight}"
-                                      WidthRequest="80">
+                                      WidthRequest="84">
                                     <!-- Vis billede hvis det findes -->
                                     <Image Source="{Binding ImagePath}"
                                            Aspect="AspectFill"
-                                           IsVisible="{Binding ImagePath, 
-                                               Converter={StaticResource BoolToVis}}"
-                                           WidthRequest="80"
-                                           HeightRequest="80"/>
+                                           IsVisible="{Binding ImagePath, Converter={StaticResource BoolToVis}}"
+                                           WidthRequest="84"
+                                           HeightRequest="84"/>
                                     <!-- Placeholder ikon -->
                                     <Label Text="📦"
-                                           FontSize="30"
+                                           FontSize="32"
                                            HorizontalOptions="Center"
                                            VerticalOptions="Center"
-                                           IsVisible="{Binding ImagePath, 
-                                               Converter={StaticResource InverseBool}}"/>
+                                           IsVisible="{Binding ImagePath, Converter={StaticResource InverseBool}}"/>
                                 </Grid>
 
                                 <!-- Gruppe info -->
                                 <VerticalStackLayout Grid.Column="1"
                                                      VerticalOptions="Center"
-                                                     Padding="14,0">
+                                                     Padding="14,0"
+                                                     Spacing="2">
                                     <Label Text="{Binding Name}"
                                            FontSize="17"
                                            FontAttributes="Bold"
-                                           TextColor="{StaticResource TextPrimary}"/>
+                                           TextColor="{StaticResource TextPrimary}"
+                                           LineBreakMode="TailTruncation"/>
                                     <Label Text="{Binding CreatedAt, StringFormat='Oprettet {0:dd/MM/yyyy}'}"
                                            FontSize="12"
                                            TextColor="{StaticResource TextSecondary}"/>
@@ -127,11 +137,12 @@
 
                                 <!-- Pil -->
                                 <Label Grid.Column="2"
-                                       Text=">"
-                                       FontSize="20"
+                                       Text="›"
+                                       FontSize="26"
+                                       FontAttributes="Bold"
                                        TextColor="{StaticResource TextMuted}"
                                        VerticalOptions="Center"
-                                       Margin="0,0,16,0"/>
+                                       Margin="0,0,18,0"/>
                             </Grid>
                         </Frame>
                     </SwipeView>
