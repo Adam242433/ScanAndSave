@@ -65,7 +65,7 @@
     <!-- Visible container around Entry / Picker / DatePicker / Editor -->
     <Style x:Key="FieldBorder" TargetType="Border">
         <Setter Property="BackgroundColor" Value="{StaticResource FieldBackground}"/>
-        <Setter Property="Stroke" Value="{StaticResource FieldBorder}"/>
+        <Setter Property="Stroke" Value="{StaticResource FieldBorderColor}"/>
         <Setter Property="StrokeThickness" Value="1"/>
         <Setter Property="StrokeShape" Value="RoundRectangle 10"/>
         <Setter Property="Padding" Value="12,0"/>
