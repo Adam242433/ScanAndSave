@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
+             xmlns:converters="clr-namespace:ScanAndSave.Converters"
+             x:Class="ScanAndSave.Views.ScannerPage"
+             Title="Scan &amp; Save"
+             BackgroundColor="{StaticResource BackgroundLight}">
+
+    <ContentPage.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVis"/>
+        <converters:InverseBoolConverter x:Key="InverseBool"/>
+        <converters:StringToBoolConverter x:Key="StringToBool"/>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- ========== HEADER ========== -->
+        <Grid Grid.Row="0" Padding="20,16" ColumnDefinitions="*,Auto">
+            <VerticalStackLayout>
+                <Label Text="Scan &amp; Save"
+                       Style="{StaticResource PageTitle}"/>
+                <Label Text="Scan en stregkode for at tilføje en vare"
+                       TextColor="{StaticResource TextSecondary}"
+                       FontSize="14"/>
+            </VerticalStackLayout>
+            <Button Grid.Column="1"
+                    Text="Mine grupper"
+                    Style="{StaticResource SecondaryButton}"
+                    Clicked="OnGroupsClicked"
+                    VerticalOptions="Center"/>
+        </Grid>
+
+        <!-- ========== SCROLLABLE CONTENT ========== -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Spacing="16" Padding="20,0,20,20">
+
+                <!-- ===== KAMERA SCANNER ===== -->
+                <Frame Style="{StaticResource CardFrame}" Padding="0" IsClippedToBounds="True">
+                    <Grid HeightRequest="280">
+                        <!-- ZXing kamera-scanner -->
+                        <zxing:CameraBarcodeReaderView
+                            x:Name="BarcodeReader"
+                            IsDetecting="True"
+                            BarcodesDetected="OnBarcodesDetected"
+                            HorizontalOptions="Fill"
+                            VerticalOptions="Fill"/>
+
+                        <!-- Overlay med scanning-ramme -->
+                        <BoxView Color="#00000040"
+                                 HorizontalOptions="Fill"
+                                 VerticalOptions="Fill"/>
+
+                        <!-- Scanning-indikator-tekst -->
+                        <Frame BackgroundColor="#00000080"
+                               CornerRadius="20"
+                               Padding="14,8"
+                               HasShadow="False"
+                               HorizontalOptions="Center"
+                               VerticalOptions="End"
+                               Margin="0,0,0,16">
+                            <Label Text="Hold stregkoden i rammen"
+                                   TextColor="White"
+                                   FontSize="13"
+                                   HorizontalTextAlignment="Center"/>
+                        </Frame>
+                    </Grid>
+                </Frame>
+
+                <!-- ===== SCANNET STREGKODE BADGE ===== -->
+                <Frame Style="{StaticResource CardFrame}"
+                       Padding="12"
+                       IsVisible="{Binding HasScannedBarcode}">
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <Frame BackgroundColor="{StaticResource Accent}"
+                               CornerRadius="8"
+                               Padding="10,6"
+                               HasShadow="False"
+                               VerticalOptions="Center">
+                            <Label Text="SCANNET"
+                                   TextColor="White"
+                                   FontSize="11"
+                                   FontAttributes="Bold"/>
+                        </Frame>
+                        <Label Grid.Column="1"
+                               Text="{Binding ScannedBarcode}"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource TextPrimary}"
+                               VerticalOptions="Center"
+                               Margin="12,0,0,0"/>
+                        <Button Grid.Column="2"
+                                Text="Ryd"
+                                TextColor="{StaticResource TextMuted}"
+                                BackgroundColor="Transparent"
+                                FontSize="13"
+                                Clicked="OnClearBarcode"
+                                VerticalOptions="Center"/>
+                    </Grid>
+                </Frame>
+
+                <!-- ===== TILFØJ VARE FORMULAR ===== -->
+                <Frame Style="{StaticResource CardFrame}"
+                       IsVisible="{Binding HasScannedBarcode}">
+                    <VerticalStackLayout Spacing="14">
+
+                        <Label Text="Tilføj vare"
+                               Style="{StaticResource SectionTitle}"/>
+
+                        <!-- Varenavn -->
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Varenavn"
+                                   TextColor="{StaticResource TextSecondary}"
+                                   FontSize="13"/>
+                            <Entry Placeholder="Fx Arla Letmælk 1L"
+                                   Text="{Binding ProductName}"
+                                   Style="{StaticResource EntryStyle}"/>
+                        </VerticalStackLayout>
+
+                        <!-- Kategori -->
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Kategori"
+                                   TextColor="{StaticResource TextSecondary}"
+                                   FontSize="13"/>
+                            <Entry Placeholder="Fx Mejeri, Kød, Drikkevarer"
+                                   Text="{Binding Category}"
+                                   Style="{StaticResource EntryStyle}"/>
+                        </VerticalStackLayout>
+
+                        <!-- Antal -->
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Antal"
+                                   TextColor="{StaticResource TextSecondary}"
+                                   FontSize="13"/>
+                            <Grid ColumnDefinitions="50,*,50" HeightRequest="48">
+                                <Button Text="-"
+                                        BackgroundColor="{StaticResource BackgroundLight}"
+                                        TextColor="{StaticResource TextPrimary}"
+                                        FontSize="20"
+                                        FontAttributes="Bold"
+                                        CornerRadius="10"
+                                        Clicked="OnQuantityMinus"/>
+                                <Label Grid.Column="1"
+                                       Text="{Binding Quantity}"
+                                       FontSize="20"
+                                       FontAttributes="Bold"
+                                       TextColor="{StaticResource TextPrimary}"
+                                       HorizontalTextAlignment="Center"
+                                       VerticalTextAlignment="Center"/>
+                                <Button Grid.Column="2"
+                                        Text="+"
+                                        BackgroundColor="{StaticResource PrimaryLight}"
+                                        TextColor="{StaticResource Primary}"
+                                        FontSize="20"
+                                        FontAttributes="Bold"
+                                        CornerRadius="10"
+                                        Clicked="OnQuantityPlus"/>
+                            </Grid>
+                        </VerticalStackLayout>
+
+                        <!-- Udløbsdato -->
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Udløbsdato (valgfrit)"
+                                   TextColor="{StaticResource TextSecondary}"
+                                   FontSize="13"/>
+                            <DatePicker x:Name="ExpiryPicker"
+                                        Format="dd/MM/yyyy"
+                                        FontSize="16"
+                                        DateSelected="OnExpiryDateSelected"/>
+                        </VerticalStackLayout>
+
+                        <!-- Gruppe-vælger -->
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Opbevaringsgruppe"
+                                   TextColor="{StaticResource TextSecondary}"
+                                   FontSize="13"/>
+                            <Picker x:Name="GroupPicker"
+                                    Title="Vælg gruppe..."
+                                    ItemsSource="{Binding AvailableGroups}"
+                                    ItemDisplayBinding="{Binding Name}"
+                                    FontSize="16"
+                                    SelectedIndexChanged="OnGroupSelected"/>
+                        </VerticalStackLayout>
+
+                        <!-- Bemærkninger -->
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Bemærkninger (valgfrit)"
+                                   TextColor="{StaticResource TextSecondary}"
+                                   FontSize="13"/>
+                            <Editor Placeholder="Tilføj noter..."
+                                    Text="{Binding Notes}"
+                                    HeightRequest="70"
+                                    BackgroundColor="{StaticResource BackgroundLight}"
+                                    FontSize="15"/>
+                        </VerticalStackLayout>
+
+                        <!-- Status besked -->
+                        <Label Text="{Binding StatusMessage}"
+                               TextColor="{StaticResource Accent}"
+                               FontSize="14"
+                               IsVisible="{Binding StatusMessage, Converter={StaticResource StringToBool}}"
+                               HorizontalTextAlignment="Center"/>
+
+                        <!-- Tilføj-knap -->
+                        <Button Text="Tilføj vare"
+                                Style="{StaticResource PrimaryButton}"
+                                Clicked="OnAddProduct"
+                                IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBool}}"
+                                Margin="0,4,0,0"/>
+
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- ===== HURTIG-ADGANG TIL GRUPPER ===== -->
+                <Frame Style="{StaticResource CardFrame}"
+                       IsVisible="{Binding HasScannedBarcode, Converter={StaticResource InverseBool}}">
+                    <VerticalStackLayout Spacing="12">
+                        <Label Text="Dine grupper"
+                               Style="{StaticResource SectionTitle}"/>
+                        <Label Text="Tryk 'Mine grupper' for at se dine opbevaringssteder"
+                               TextColor="{StaticResource TextSecondary}"
+                               FontSize="14"/>
+                        <Button Text="Se alle grupper"
+                                Style="{StaticResource SecondaryButton}"
+                                Clicked="OnGroupsClicked"/>
+                    </VerticalStackLayout>
+                </Frame>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+    </Grid>
+
+</ContentPage>

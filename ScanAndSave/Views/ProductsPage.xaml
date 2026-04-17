@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:ScanAndSave.Converters"
+             x:Class="ScanAndSave.Views.ProductsPage"
+             Title="{Binding CurrentGroupName}"
+             BackgroundColor="{StaticResource BackgroundLight}">
+
+    <ContentPage.Resources>
+        <converters:DateToStringConverter x:Key="DateToString"/>
+        <converters:ExpiryToColorConverter x:Key="ExpiryToColor"/>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVis"/>
+        <converters:InverseBoolConverter x:Key="InverseBool"/>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,Auto,Auto,*">
+
+        <!-- ========== HEADER ========== -->
+        <VerticalStackLayout Grid.Row="0" Padding="20,16,20,8">
+            <Label Text="{Binding CurrentGroupName}"
+                   Style="{StaticResource PageTitle}"/>
+            <Label Text="Dine gemte varer i denne gruppe"
+                   TextColor="{StaticResource TextSecondary}"
+                   FontSize="14"/>
+        </VerticalStackLayout>
+
+        <!-- ========== SØGEFELT ========== -->
+        <Frame Grid.Row="1"
+               Style="{StaticResource CardFrame}"
+               Padding="4,0"
+               Margin="20,0">
+            <Grid ColumnDefinitions="Auto,*" HeightRequest="44">
+                <Label Text="Søg"
+                       FontSize="16"
+                       TextColor="{StaticResource TextMuted}"
+                       VerticalOptions="Center"
+                       Margin="12,0,0,0"/>
+                <Entry Grid.Column="1"
+                       Placeholder="Søg efter vare..."
+                       Text="{Binding SearchText}"
+                       Style="{StaticResource SearchEntry}"
+                       BackgroundColor="Transparent"/>
+            </Grid>
+        </Frame>
+
+        <!-- ========== LOADING ========== -->
+        <ActivityIndicator Grid.Row="2"
+                           IsRunning="{Binding IsLoading}"
+                           IsVisible="{Binding IsLoading}"
+                           Color="{StaticResource Primary}"
+                           HeightRequest="30"
+                           Margin="0,8"/>
+
+        <!-- ========== PRODUKTER LISTE ========== -->
+        <CollectionView Grid.Row="3"
+                        ItemsSource="{Binding Products}"
+                        Margin="20,8,20,20"
+                        SelectionMode="None">
+
+            <!-- Tom tilstand -->
+            <CollectionView.EmptyView>
+                <VerticalStackLayout HorizontalOptions="Center"
+                                     VerticalOptions="Center"
+                                     Spacing="12"
+                                     Padding="20">
+                    <Label Text="Ingen varer endnu"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource TextPrimary}"
+                           HorizontalTextAlignment="Center"/>
+                    <Label Text="Scan en stregkode på startsiden for at tilføje varer til denne gruppe"
+                           FontSize="14"
+                           TextColor="{StaticResource TextSecondary}"
+                           HorizontalTextAlignment="Center"/>
+                    <Button Text="Gå til scanner"
+                            Style="{StaticResource PrimaryButton}"
+                            WidthRequest="200"
+                            Clicked="OnGoToScanner"
+                            HorizontalOptions="Center"
+                            Margin="0,8,0,0"/>
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <SwipeView>
+                        <!-- Swipe til venstre for at slette -->
+                        <SwipeView.RightItems>
+                            <SwipeItems>
+                                <SwipeItem Text="Slet"
+                                           BackgroundColor="{StaticResource Danger}"
+                                           Invoked="OnDeleteProduct"
+                                           CommandParameter="{Binding .}"/>
+                            </SwipeItems>
+                        </SwipeView.RightItems>
+
+                        <Frame Style="{StaticResource CardFrame}"
+                               Margin="0,5"
+                               Padding="14">
+                            <Grid RowDefinitions="Auto,Auto,Auto"
+                                  ColumnDefinitions="*,Auto">
+
+                                <!-- Række 1: Navn + Kategori -->
+                                <VerticalStackLayout Grid.Row="0" Grid.Column="0">
+                                    <Label Text="{Binding Name}"
+                                           FontSize="17"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource TextPrimary}"
+                                           LineBreakMode="TailTruncation"/>
+                                    <Label Text="{Binding Category}"
+                                           FontSize="12"
+                                           TextColor="{StaticResource TextSecondary}"/>
+                                </VerticalStackLayout>
+
+                                <!-- Række 1: Antal kontrol -->
+                                <Grid Grid.Row="0" Grid.Column="1"
+                                      ColumnDefinitions="36,40,36"
+                                      VerticalOptions="Center">
+                                    <Button Text="-"
+                                            BackgroundColor="{StaticResource BackgroundLight}"
+                                            TextColor="{StaticResource TextPrimary}"
+                                            FontSize="18"
+                                            FontAttributes="Bold"
+                                            CornerRadius="8"
+                                            HeightRequest="36"
+                                            WidthRequest="36"
+                                            Padding="0"
+                                            Clicked="OnQuantityDown"
+                                            CommandParameter="{Binding .}"/>
+                                    <Label Grid.Column="1"
+                                           Text="{Binding Quantity}"
+                                           FontSize="18"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource Primary}"
+                                           HorizontalTextAlignment="Center"
+                                           VerticalTextAlignment="Center"/>
+                                    <Button Grid.Column="2"
+                                            Text="+"
+                                            BackgroundColor="{StaticResource PrimaryLight}"
+                                            TextColor="{StaticResource Primary}"
+                                            FontSize="18"
+                                            FontAttributes="Bold"
+                                            CornerRadius="8"
+                                            HeightRequest="36"
+                                            WidthRequest="36"
+                                            Padding="0"
+                                            Clicked="OnQuantityUp"
+                                            CommandParameter="{Binding .}"/>
+                                </Grid>
+
+                                <!-- Række 2: Stregkode -->
+                                <Label Grid.Row="1" Grid.ColumnSpan="2"
+                                       Text="{Binding Barcode, StringFormat='Stregkode: {0}'}"
+                                       FontSize="12"
+                                       TextColor="{StaticResource TextMuted}"
+                                       Margin="0,6,0,0"/>
+
+                                <!-- Række 3: Udløbsdato + Tilføjelsesdato -->
+                                <Grid Grid.Row="2" Grid.ColumnSpan="2"
+                                      ColumnDefinitions="*,Auto"
+                                      Margin="0,4,0,0">
+                                    <Label Text="{Binding ExpiryDate, Converter={StaticResource DateToString}}"
+                                           TextColor="{Binding ExpiryDate, Converter={StaticResource ExpiryToColor}}"
+                                           FontSize="13"
+                                           FontAttributes="Bold"/>
+                                    <Label Grid.Column="1"
+                                           Text="{Binding AddedDate, StringFormat='Tilføjet {0:dd/MM}'}"
+                                           FontSize="12"
+                                           TextColor="{StaticResource TextMuted}"/>
+                                </Grid>
+
+                            </Grid>
+                        </Frame>
+                    </SwipeView>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
+
+</ContentPage>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:ScanAndSave.Converters"
+             x:Class="ScanAndSave.Views.GroupsPage"
+             Title="Mine grupper"
+             BackgroundColor="{StaticResource BackgroundLight}">
+
+    <ContentPage.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVis"/>
+        <converters:InverseBoolConverter x:Key="InverseBool"/>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,Auto,*">
+
+        <!-- ========== HEADER ========== -->
+        <Grid Grid.Row="0" Padding="20,16" ColumnDefinitions="*,Auto">
+            <VerticalStackLayout>
+                <Label Text="Mine grupper"
+                       Style="{StaticResource PageTitle}"/>
+                <Label Text="Vælg en gruppe for at se varer"
+                       TextColor="{StaticResource TextSecondary}"
+                       FontSize="14"/>
+            </VerticalStackLayout>
+            <Button Grid.Column="1"
+                    Text="+ Ny"
+                    Style="{StaticResource PrimaryButton}"
+                    WidthRequest="80"
+                    HeightRequest="44"
+                    Clicked="OnAddGroup"
+                    VerticalOptions="Center"/>
+        </Grid>
+
+        <!-- ========== LOADING INDIKATOR ========== -->
+        <ActivityIndicator Grid.Row="1"
+                           IsRunning="{Binding IsLoading}"
+                           IsVisible="{Binding IsLoading}"
+                           Color="{StaticResource Primary}"
+                           HeightRequest="30"
+                           Margin="0,8"/>
+
+        <!-- ========== GRUPPER LISTE ========== -->
+        <CollectionView Grid.Row="2"
+                        ItemsSource="{Binding Groups}"
+                        Margin="20,0,20,20"
+                        SelectionMode="None">
+
+            <!-- Tom tilstand -->
+            <CollectionView.EmptyView>
+                <VerticalStackLayout HorizontalOptions="Center"
+                                     VerticalOptions="Center"
+                                     Spacing="12"
+                                     Padding="20">
+                    <Label Text="Ingen grupper endnu"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource TextPrimary}"
+                           HorizontalTextAlignment="Center"/>
+                    <Label Text="Opret din første gruppe, fx 'Køleskab' eller 'Fryser'"
+                           FontSize="14"
+                           TextColor="{StaticResource TextSecondary}"
+                           HorizontalTextAlignment="Center"/>
+                    <Button Text="Opret gruppe"
+                            Style="{StaticResource PrimaryButton}"
+                            WidthRequest="200"
+                            Clicked="OnAddGroup"
+                            HorizontalOptions="Center"
+                            Margin="0,8,0,0"/>
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <SwipeView>
+                        <!-- Swipe til venstre for at slette -->
+                        <SwipeView.RightItems>
+                            <SwipeItems>
+                                <SwipeItem Text="Slet"
+                                           BackgroundColor="{StaticResource Danger}"
+                                           Invoked="OnDeleteGroup"
+                                           CommandParameter="{Binding .}"/>
+                            </SwipeItems>
+                        </SwipeView.RightItems>
+
+                        <Frame Style="{StaticResource CardFrame}"
+                               Margin="0,6"
+                               Padding="0"
+                               IsClippedToBounds="True">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnGroupTapped"
+                                                      CommandParameter="{Binding .}"/>
+                            </Frame.GestureRecognizers>
+
+                            <Grid ColumnDefinitions="80,*,Auto" HeightRequest="80">
+
+                                <!-- Gruppe-billede eller placeholder -->
+                                <Grid BackgroundColor="{StaticResource PrimaryLight}"
+                                      WidthRequest="80">
+                                    <!-- Vis billede hvis det findes -->
+                                    <Image Source="{Binding ImagePath}"
+                                           Aspect="AspectFill"
+                                           IsVisible="{Binding ImagePath, 
+                                               Converter={StaticResource BoolToVis}}"
+                                           WidthRequest="80"
+                                           HeightRequest="80"/>
+                                    <!-- Placeholder ikon -->
+                                    <Label Text="📦"
+                                           FontSize="30"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"
+                                           IsVisible="{Binding ImagePath, 
+                                               Converter={StaticResource InverseBool}}"/>
+                                </Grid>
+
+                                <!-- Gruppe info -->
+                                <VerticalStackLayout Grid.Column="1"
+                                                     VerticalOptions="Center"
+                                                     Padding="14,0">
+                                    <Label Text="{Binding Name}"
+                                           FontSize="17"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource TextPrimary}"/>
+                                    <Label Text="{Binding CreatedAt, StringFormat='Oprettet {0:dd/MM/yyyy}'}"
+                                           FontSize="12"
+                                           TextColor="{StaticResource TextSecondary}"/>
+                                </VerticalStackLayout>
+
+                                <!-- Pil -->
+                                <Label Grid.Column="2"
+                                       Text=">"
+                                       FontSize="20"
+                                       TextColor="{StaticResource TextMuted}"
+                                       VerticalOptions="Center"
+                                       Margin="0,0,16,0"/>
+                            </Grid>
+                        </Frame>
+                    </SwipeView>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
+
+</ContentPage>
