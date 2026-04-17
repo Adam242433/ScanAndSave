@@ -85,9 +85,10 @@ namespace ScanAndSave.Views
         {
             await Shell.Current.GoToAsync("../..");
         }
+        
 
         /// <summary>
-        /// Hjælpemetode til at hente Product fra button's CommandParameter
+        /// Hjælpemetode til ... at hente Product fra button's CommandParameter
         /// </summary>
         private static Product? GetProductFromSender(object? sender)
         {
