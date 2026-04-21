@@ -17,13 +17,30 @@ namespace ScanAndSave.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
+
             await _vm.InitializeAsync();
+
             BarcodeReader.Options = new BarcodeReaderOptions
             {
                 Formats = BarcodeFormats.OneDimensional,
                 AutoRotate = true,
                 Multiple = false
             };
+
+            
+            BarcodeReader.IsDetecting = true;
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+
+            // Stop kamera og scanning når vi forlader siden
+            if (BarcodeReader is not null)
+            {
+                BarcodeReader.IsDetecting = false;
+                BarcodeReader.IsTorchOn = false;
+            }
         }
 
         /// <summary>
