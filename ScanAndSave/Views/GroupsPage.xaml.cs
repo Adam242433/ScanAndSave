@@ -20,56 +20,62 @@ namespace ScanAndSave.Views
             await _vm.LoadGroupsAsync();
         }
 
-        /// <summary>
-        /// Åbn dialog for at tilføje ny gruppe
-        /// </summary>
         private async void OnAddGroup(object? sender, EventArgs e)
         {
-            string name = await DisplayPromptAsync(
+            // Trin 1: Navn
+            string? name = await DisplayPromptAsync(
                 "Ny gruppe",
                 "Hvad skal gruppen hedde?",
                 placeholder: "Fx Køleskab, Fryser, Skuffe...",
-                accept: "Opret",
-                cancel: "Annuller");
+                accept: "Næste",
+                cancel: "Annuller",
+                maxLength: 40,
+                keyboard: Keyboard.Text);
 
             if (string.IsNullOrWhiteSpace(name))
                 return;
 
-            // Spørg om brugeren vil tage et billede
+            // Trin 2: Billede (valgfrit)
             string? imagePath = null;
             bool takePicture = await DisplayAlert(
-                "Billede",
-                "Vil du tage et billede af gruppen?",
-                "Ja", "Nej");
+                "Billede af gruppen",
+                $"Vil du tage et billede af '{name.Trim()}'?",
+                "Tag billede",
+                "Spring over");
 
             if (takePicture)
             {
-                try
-                {
-                    var photo = await MediaPicker.Default.CapturePhotoAsync();
-                    if (photo is not null)
-                    {
-                        // Gem billedet lokalt
-                        var localPath = Path.Combine(
-                            FileSystem.AppDataDirectory, $"group_{DateTime.Now.Ticks}.jpg");
-                        using var stream = await photo.OpenReadAsync();
-                        using var fileStream = File.OpenWrite(localPath);
-                        await stream.CopyToAsync(fileStream);
-                        imagePath = localPath;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    await DisplayAlert("Fejl", $"Kunne ikke tage billede: {ex.Message}", "OK");
-                }
+                imagePath = await TakePhotoAsync();
             }
 
+            // Trin 3: Gem
             await _vm.AddGroupAsync(name.Trim(), imagePath);
         }
 
-        /// <summary>
-        /// Åbn gruppen og vis dens produkter
-        /// </summary>
+        private async Task<string?> TakePhotoAsync()
+        {
+            try
+            {
+                var photo = await MediaPicker.Default.CapturePhotoAsync();
+                if (photo is null) return null;
+
+                var localPath = Path.Combine(
+                    FileSystem.AppDataDirectory,
+                    $"group_{DateTime.Now.Ticks}.jpg");
+
+                using var stream = await photo.OpenReadAsync();
+                using var fileStream = File.OpenWrite(localPath);
+                await stream.CopyToAsync(fileStream);
+
+                return localPath;
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Fejl", $"Kunne ikke tage billede: {ex.Message}", "OK");
+                return null;
+            }
+        }
+
         private async void OnGroupTapped(object? sender, TappedEventArgs e)
         {
             if (e.Parameter is StorageGroup group)
@@ -79,20 +85,41 @@ namespace ScanAndSave.Views
             }
         }
 
-        /// <summary>
-        /// Slet en gruppe med bekræftelse
-        /// </summary>
         private async void OnDeleteGroup(object? sender, EventArgs e)
         {
             if (sender is SwipeItem swipeItem && swipeItem.CommandParameter is StorageGroup group)
             {
                 bool confirm = await DisplayAlert(
                     "Slet gruppe",
-                    $"Er du sikker på at du vil slette '{group.Name}' og alle dens varer?",
-                    "Slet", "Annuller");
+                    $"Er du sikker pa at du vil slette '{group.Name}' og alle dens varer?",
+                    "Slet",
+                    "Annuller");
 
                 if (confirm)
                 {
+                    if (!string.IsNullOrWhiteSpace(group.ImagePath) && File.Exists(group.ImagePath))
+                        File.Delete(group.ImagePath);
+
+                    await _vm.DeleteGroupAsync(group);
+                }
+            }
+        }
+
+        private async void OnDeleteGroupButton(object? sender, EventArgs e)
+        {
+            if (sender is Button btn && btn.CommandParameter is StorageGroup group)
+            {
+                bool confirm = await DisplayAlert(
+                    "Slet gruppe",
+                    $"Er du sikker pa at du vil slette '{group.Name}' og alle dens varer?",
+                    "Slet",
+                    "Annuller");
+
+                if (confirm)
+                {
+                    if (!string.IsNullOrWhiteSpace(group.ImagePath) && File.Exists(group.ImagePath))
+                        File.Delete(group.ImagePath);
+
                     await _vm.DeleteGroupAsync(group);
                 }
             }
