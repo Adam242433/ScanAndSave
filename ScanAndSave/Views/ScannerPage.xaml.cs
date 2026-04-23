@@ -27,7 +27,13 @@ namespace ScanAndSave.Views
                 Multiple = false
             };
 
-            
+            //  FORCE kamera reset
+            BarcodeReader.IsDetecting = false;
+
+
+            await Task.Delay(200);
+
+
             BarcodeReader.IsDetecting = true;
         }
 
@@ -35,12 +41,8 @@ namespace ScanAndSave.Views
         {
             base.OnDisappearing();
 
-            // Stop kamera og scanning når vi forlader siden
-            if (BarcodeReader is not null)
-            {
-                BarcodeReader.IsDetecting = false;
-                BarcodeReader.IsTorchOn = false;
-            }
+            BarcodeReader.IsDetecting = false;
+
         }
 
         /// <summary>

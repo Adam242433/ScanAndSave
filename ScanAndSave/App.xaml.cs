@@ -1,15 +1,11 @@
-﻿namespace ScanAndSave
-{
-    public partial class App : Application
-    {
-        public App()
-        {
-            InitializeComponent();
-        }
+﻿namespace ScanAndSave;
 
-        protected override Window CreateWindow(IActivationState? activationState)
-        {
-            return new Window(new AppShell());
-        }
+public partial class App : Application // MUST be Application, NOT MauiWinUIApplication
+{
+    public App()
+    {
+        InitializeComponent();
+
+        MainPage = new AppShell();
     }
 }
