@@ -20,6 +20,9 @@ namespace ScanAndSave.Views
 
             await _vm.InitializeAsync();
 
+            // Nulstil picker-valg så det matcher ViewModel
+            GroupPicker.SelectedIndex = -1;
+
             BarcodeReader.Options = new BarcodeReaderOptions
             {
                 Formats = BarcodeFormats.OneDimensional,
@@ -27,13 +30,8 @@ namespace ScanAndSave.Views
                 Multiple = false
             };
 
-            //  FORCE kamera reset
             BarcodeReader.IsDetecting = false;
-
-
             await Task.Delay(200);
-
-
             BarcodeReader.IsDetecting = true;
         }
 

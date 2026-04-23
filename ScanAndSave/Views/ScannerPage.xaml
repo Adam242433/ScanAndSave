@@ -178,17 +178,27 @@
                                             DateSelected="OnExpiryDateSelected"/>
                             </Border>
                         </VerticalStackLayout>
-
                         <!-- Gruppe-vælger -->
                         <VerticalStackLayout Spacing="6">
                             <Label Text="Opbevaringsgruppe" Style="{StaticResource FieldLabel}"/>
                             <Border Style="{StaticResource FieldBorder}">
-                                <Picker x:Name="GroupPicker"
-                                        Title="Vælg gruppe..."
-                                        ItemsSource="{Binding AvailableGroups}"
-                                        ItemDisplayBinding="{Binding Name}"
-                                        Style="{StaticResource PickerStyle}"
-                                        SelectedIndexChanged="OnGroupSelected"/>
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label x:Name="GroupLabel"
+                   Text="Vælg gruppe..."
+                   TextColor="{StaticResource TextMuted}"
+                   FontSize="16"
+                   VerticalOptions="Center"
+                   Padding="0,0,8,0"/>
+                                    <Label Grid.Column="1"
+                   Text="v"
+                   FontSize="14"
+                   TextColor="{StaticResource TextMuted}"
+                   VerticalOptions="Center"
+                   Margin="0,0,4,0"/>
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnGroupPickerTapped"/>
+                                    </Grid.GestureRecognizers>
+                                </Grid>
                             </Border>
                         </VerticalStackLayout>
 
