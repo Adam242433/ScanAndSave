@@ -179,29 +179,20 @@
                             </Border>
                         </VerticalStackLayout>
                         <!-- Gruppe-vælger -->
+                        <!-- Gruppe-vælger -->
                         <VerticalStackLayout Spacing="6">
                             <Label Text="Opbevaringsgruppe" Style="{StaticResource FieldLabel}"/>
+
                             <Border Style="{StaticResource FieldBorder}">
-                                <Grid ColumnDefinitions="*,Auto">
-                                    <Label x:Name="GroupLabel"
-                   Text="Vælg gruppe..."
-                   TextColor="{StaticResource TextMuted}"
-                   FontSize="16"
-                   VerticalOptions="Center"
-                   Padding="0,0,8,0"/>
-                                    <Label Grid.Column="1"
-                   Text="v"
-                   FontSize="14"
-                   TextColor="{StaticResource TextMuted}"
-                   VerticalOptions="Center"
-                   Margin="0,0,4,0"/>
-                                    <Grid.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="OnGroupPickerTapped"/>
-                                    </Grid.GestureRecognizers>
-                                </Grid>
+                                <Picker
+            x:Name="GroupPicker"
+            Title="Vælg gruppe..."
+            ItemsSource="{Binding Groups}"
+            ItemDisplayBinding="{Binding Name}"
+            SelectedIndexChanged="OnGroupSelected"
+            TextColor="{StaticResource TextPrimary}" />
                             </Border>
                         </VerticalStackLayout>
-
                         <!-- Bemærkninger -->
                         <VerticalStackLayout Spacing="6">
                             <Label Text="Bemærkninger (valgfrit)" Style="{StaticResource FieldLabel}"/>
